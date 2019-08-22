@@ -1,8 +1,9 @@
 
 {
-  "name": "react-native-helpshift",
-  "version": "1.0.0",
-  "description": "",
+  "name": "helpshift-react-native",
+  "version": "1.0.1c",
+  "description": "Helpshift React Native wrapper",
+  "homepage": "https://github.com/readehelpshift/helpshift-react-native",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,7 +11,7 @@
   "keywords": [
     "react-native"
   ],
-  "author": "",
+  "author": "Reade Lobdill",
   "license": "",
   "peerDependencies": {
     "react-native": "^0.41.2"
