@@ -30,7 +30,7 @@
     ```
 3. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
     ```
-      compile project(':helpshift-react-native')
+    compile project(':helpshift-react-native')
     ```
 
 
