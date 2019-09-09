@@ -30,7 +30,7 @@
     ```
 3. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
     ```
-    compile project(':helpshift-react-native')
+   compile project(':helpshift-react-native')
     ```
 
 
@@ -50,6 +50,31 @@ const appId = Platform.select({ ios: iosAppId, android: androidAppId })
 Helpshift.init(apiKey, domain, appId);
 ```
 
+#### Login
+```javascript
+Helpshift.login(identifier)
+```
+
+#### Login with Email
+```javascript
+Helpshift.loginWithEmail(identifier, email)
+```
+
+#### Login with Name
+```javascript
+Helpshift.loginWithName(identifier, name)
+```
+
+#### Login with Email and Name
+```javascript
+Helpshift.loginWithEmailAndName(identifier, email, name)
+```
+
+#### Logout
+```javascript
+Helpshift.logout()
+```
+
 #### Show Conversation
 ```javascript
 Helpshift.showConversation()
@@ -58,5 +83,27 @@ Helpshift.showConversation()
 #### Show FAQs
 ```javascript
 Helpshift.showFAQs()
+```
+
+#### With Custom Issue Fields (CIFs) ([Documentation](https://support.helpshift.com/kb/article/custom-issue-fields/))
+```javascript
+const cifs = {
+// 'key': ['type', 'value']
+   'number_of_rides': ['n', '12'],
+   'street': ['sl', '343 sansome'],
+   'new_customer': ['b', 'true']
+}
+
+// Where data types are mapped like so:
+// singleline => sl
+// multiline => ml
+// number => n
+// date => dt
+// dropdown => dd
+// checkbox => b
+
+Helpshift.showConversationWithCIFs(cifs)
+// OR
+Helpshift.showFAQsWithCIFs(cifs)
 ```
   
