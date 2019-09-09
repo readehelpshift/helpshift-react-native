@@ -1,6 +1,6 @@
 {
   "name": "helpshift-react-native",
-  "version": "0.0.1-d",
+  "version": "0.0.1-e",
   "description": "Helpshift React Native wrapper",
   "homepage": "https://github.com/readehelpshift/helpshift-react-native",
   "main": "index.js",

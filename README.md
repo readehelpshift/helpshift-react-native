@@ -3,7 +3,7 @@
 
 ## Getting started
 
-`$ yarn add helpshift-react-native --save`
+`$ yarn add helpshift-react-native`
 
 ### Mostly automatic installation
 
