@@ -1,6 +1,6 @@
 {
   "name": "helpshift-react-native",
-  "version": "7.6.2-rc1",
+  "version": "7.6.2-withCampaigns",
   "description": "Helpshift React Native wrapper",
   "homepage": "https://github.com/readehelpshift/helpshift-react-native",
   "main": "index.js",
