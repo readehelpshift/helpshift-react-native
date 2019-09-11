@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.HashMap;
 
 import com.helpshift.Core;
-import com.helpshift.All;
 import com.helpshift.exceptions.InstallException;
 import com.helpshift.support.Support;
 import com.helpshift.HelpshiftUser;
@@ -32,7 +31,7 @@ public class RNHelpshiftModule extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void init(String key, String domain, String appid) throws InstallException {
-      Core.init(All.getInstance());
+      Core.init(Support.getInstance());
       Core.install(this.app, key, domain, appid);
   }
 
