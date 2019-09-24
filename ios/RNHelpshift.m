@@ -1,6 +1,7 @@
 
 #import "RNHelpshift.h"
 #import "RCTLog.h"
+#import "RCTViewManager.h"
 
 #import "HelpshiftCore.h"
 #import "HelpshiftSupport.h"
@@ -19,29 +20,11 @@ RCT_EXPORT_METHOD(init:(NSString *)apiKey domain:(NSString *)domain appId:(NSStr
     [HelpshiftCore installForApiKey:apiKey domainName:domain appID:appId];   
 }
 
-RCT_EXPORT_METHOD(login:(NSString *)identifier)
+RCT_EXPORT_METHOD(login:(NSDictionary *)user)
 {
-    HelpshiftUserBuilder *userBuilder = [[HelpshiftUserBuilder alloc] initWithIdentifier:identifier andEmail:nil];
-    [HelpshiftCore login:userBuilder.build];
-}
-
-RCT_EXPORT_METHOD(loginWithEmail:(NSString *)identifier email:(NSString *)email)
-{
-    HelpshiftUserBuilder *userBuilder = [[HelpshiftUserBuilder alloc] initWithIdentifier:identifier andEmail:email];
-    [HelpshiftCore login:userBuilder.build];
-}
-
-RCT_EXPORT_METHOD(loginWithName:(NSString *)identifier name:(NSString *)name)
-{
-    HelpshiftUserBuilder *userBuilder = [[HelpshiftUserBuilder alloc] initWithIdentifier:identifier andEmail:nil];
-    userBuilder.name = name;
-    [HelpshiftCore login:userBuilder.build];
-}
-
-RCT_EXPORT_METHOD(loginWithEmailAndName:(NSString *)identifier email:(NSString *)email name:(NSString *)name)
-{
-    HelpshiftUserBuilder *userBuilder = [[HelpshiftUserBuilder alloc] initWithIdentifier:identifier andEmail:email];
-    userBuilder.name = name;
+    HelpshiftUserBuilder *userBuilder = [[HelpshiftUserBuilder alloc] initWithIdentifier:user[@"identifier"] andEmail:user[@"email"]];
+    if (user[@"name"]) userBuilder.name = user[@"name"];
+    if (user[@"authToken"]) userBuilder.authToken = user[@"authToken"];
     [HelpshiftCore login:userBuilder.build];
 }
 
@@ -79,5 +62,70 @@ RCT_EXPORT_METHOD(showFAQsWithCIFs:(NSDictionary *)cifs)
     UIViewController *rootController = UIApplication.sharedApplication.delegate.window.rootViewController;
     [HelpshiftSupport showFAQs:rootController withConfig:apiConfig];
 }
+
+RCT_EXPORT_METHOD(requestUnreadMessagesCount)
+{
+    RCTLogInfo(@"Reade:HERE");
+    [HelpshiftSupport requestUnreadMessagesCount:YES];
+}
+
+- (void)didReceiveUnreadMessagesCount:(NSInteger)count { 
+    
+}
+
+@end
+
+
+
+@interface RNTHelpshiftManager : RCTViewManager
+@property(nonatomic,strong) UIView* helpshiftView;
+@end
+
+@implementation RNTHelpshiftManager
+
+RCT_EXPORT_MODULE(RNTHelpshift)
+
+RCT_CUSTOM_VIEW_PROPERTY(config, NSDictionary, RNTHelpshiftManager) {
+    [HelpshiftCore initializeWithProvider:[HelpshiftSupport sharedInstance]];
+    [HelpshiftCore installForApiKey:json[@"apiKey"]
+                         domainName:json[@"domain"]
+                              appID:json[@"appId"]];
+
+    // Log user in if identified
+    if (json[@"user"]) {
+        NSDictionary *user = json[@"user"];
+        HelpshiftUserBuilder *userBuilder = [[HelpshiftUserBuilder alloc] initWithIdentifier:user[@"identifier"] andEmail:user[@"email"]];
+        if (user[@"name"]) userBuilder.name = user[@"name"];
+        if (user[@"authToken"]) userBuilder.authToken = user[@"authToken"];
+        [HelpshiftCore login:userBuilder.build];
+    }
+    
+    // Get the Helpshift conversation view controller.
+    HelpshiftAPIConfigBuilder *builder = [HelpshiftAPIConfigBuilder new];
+    [HelpshiftSupport conversationViewControllerWithConfig:[builder build] completion:^(UIViewController *conversationVC) {
+        UIViewController *rootController = UIApplication.sharedApplication.delegate.window.rootViewController;
+        
+        UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:conversationVC];
+        [navController willMoveToParentViewController:rootController];
+        
+        if (json[@"height"] && json[@"width"]) {
+            float height = [json[@"height"] floatValue];
+            float width = [json[@"width"] floatValue];
+            navController.view.frame = CGRectMake(0, 0, width, height);
+        }
+
+        [self.helpshiftView addSubview:navController.view];
+        [rootController addChildViewController:navController];
+        [navController didMoveToParentViewController:rootController];
+    }];
+}
+
+- (UIView *)view
+{
+    UIView *view = [[UIView alloc] init];
+    self.helpshiftView = view;
+    return view;
+}
+
 @end
   
