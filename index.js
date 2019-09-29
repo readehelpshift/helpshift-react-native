@@ -1,11 +1,17 @@
 import React from 'react';
-import { NativeModules, requireNativeComponent } from 'react-native';
+import { 
+  NativeModules,
+  NativeEventEmitter,
+  requireNativeComponent
+} from 'react-native';
 import PropTypes from 'prop-types';
 
 class Helpshift extends React.Component {
   render() {
-    console.log(this.props)
     return <RNTHelpshift {...this.props} />;
+  }
+  componentWillUnmount() {
+    subscription.remove();
   }
 }
 
@@ -17,7 +23,7 @@ Helpshift.propTypes = {
     height: PropTypes.number,
     width: PropTypes.number,
     user: PropTypes.shape({
-      identifier: PropTypes.string,
+      identifier: PropTypes.string.isRequired,
       email: PropTypes.string,
       name: PropTypes.string,
       authToken: PropTypes.string
@@ -27,9 +33,12 @@ Helpshift.propTypes = {
 
 const { RNHelpshift } = NativeModules;
 
+const HelpshiftEventEmitter = new NativeEventEmitter(RNHelpshift);
+
 Helpshift.init = (apiKey, domain, appId) => RNHelpshift.init(apiKey, domain, appId);
 
-Helpshift.login = user => RNHelpshift.login(user);
+// TODO: Rerender Helpshift view on iOS if using <Helpshift/>
+Helpshift.login = user => RNHelpshift.login(user)
 
 Helpshift.logout = user => RNHelpshift.logout();
 
@@ -40,6 +49,19 @@ Helpshift.showFAQs = () => RNHelpshift.showFAQs();
 Helpshift.showConversationWithCIFs = cifs => RNHelpshift.showConversationWithCIFs(cifs);
 
 Helpshift.showFAQsWithCIFs = cifs => RNHelpshift.showFAQsWithCIFs(cifs);
+
+Helpshift.requestUnreadMessagesCount = () => {
+  return new Promise((resolve, reject) => {
+    const subscription = HelpshiftEventEmitter.addListener('didReceiveUnreadMessagesCount',
+      count => {
+        resolve(count);
+        subscription.remove();
+      }
+    );
+
+    RNHelpshift.requestUnreadMessagesCount();
+  });
+}
 
 var RNTHelpshift = requireNativeComponent('RNTHelpshift', Helpshift);
 

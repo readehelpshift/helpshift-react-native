@@ -1,12 +1,21 @@
 
-#import "RNHelpshift.h"
 #import "RCTLog.h"
 #import "RCTViewManager.h"
+#import "RCTBridgeModule.h"
+#import "RCTEventEmitter.h"
+
+#import "RNHelpshift.h"
 
 #import "HelpshiftCore.h"
 #import "HelpshiftSupport.h"
 
 @implementation RNHelpshift
+
+-(id) init {
+    self = [super init];
+    [[HelpshiftSupport sharedInstance] setDelegate:self];
+    return self;
+}
 
 - (dispatch_queue_t)methodQueue
 {
@@ -65,12 +74,16 @@ RCT_EXPORT_METHOD(showFAQsWithCIFs:(NSDictionary *)cifs)
 
 RCT_EXPORT_METHOD(requestUnreadMessagesCount)
 {
-    RCTLogInfo(@"Reade:HERE");
     [HelpshiftSupport requestUnreadMessagesCount:YES];
 }
 
-- (void)didReceiveUnreadMessagesCount:(NSInteger)count { 
-    
+- (NSArray<NSString *> *)supportedEvents
+{
+    return @[@"didReceiveUnreadMessagesCount"];
+}
+
+- (void)didReceiveUnreadMessagesCount:(NSInteger)count {
+    [self sendEventWithName:@"didReceiveUnreadMessagesCount" body:@{@"count": @(count)}];
 }
 
 @end

@@ -1,11 +1,8 @@
 
-#if __has_include("RCTBridgeModule.h")
 #import "RCTBridgeModule.h"
-#else
-#import <React/RCTBridgeModule.h>
-#endif
+#import "RCTEventEmitter.h"
+#import "HelpshiftSupport.h"
 
-@interface RNHelpshift : NSObject <RCTBridgeModule>
-
+@interface RNHelpshift : RCTEventEmitter <RCTBridgeModule, HelpshiftSupportDelegate>
 @end
   

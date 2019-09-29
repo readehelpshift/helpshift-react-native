@@ -1,7 +1,9 @@
 
 package com.reactlibrary;
 
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
@@ -11,6 +13,8 @@ import com.facebook.react.bridge.ReadableMapKeySetIterator;
 import java.util.Map;
 import java.util.HashMap;
 
+import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.helpshift.Core;
 import com.helpshift.exceptions.InstallException;
 import com.helpshift.support.Support;
@@ -19,13 +23,24 @@ import com.helpshift.support.ApiConfig;
 
 import android.app.Activity;
 import android.app.Application;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+
+import androidx.annotation.Nullable;
 
 public class RNHelpshiftModule extends ReactContextBaseJavaModule {
 
   private final Application app;
+  private ReactApplicationContext mReactContext;
+  private Handler countSuccessHandler;
+  private Handler countErrorHandler;
   
   public RNHelpshiftModule(ReactApplicationContext reactContext) {
     super(reactContext);
+
+    mReactContext= reactContext;
+
     this.app = (Application)reactContext.getApplicationContext();
   }
 
@@ -36,33 +51,26 @@ public class RNHelpshiftModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void login(String identifier){
-      HelpshiftUser user = new HelpshiftUser.Builder(identifier, null)
-              .build();
-      Core.login(user);
-  }
+  public void login(ReadableMap user){
+      HelpshiftUser userBuilder;
+      if(user.hasKey("name") && user.hasKey("authToken")) {
+           userBuilder = new HelpshiftUser.Builder(user.getString("identifier"), user.getString("email"))
+                   .setName(user.getString("name"))
+                   .setAuthToken(user.getString("authToken"))
+                   .build();
+      } else if (user.hasKey("name")) {
+          userBuilder = new HelpshiftUser.Builder(user.getString("identifier"), user.getString("email"))
+                  .setName(user.getString("name"))
+                  .build();
+      } else if (user.hasKey("authToken")) {
+          userBuilder = new HelpshiftUser.Builder(user.getString("identifier"), user.getString("email"))
+                  .setAuthToken(user.getString("authToken"))
+                  .build();
+      } else {
+          userBuilder = new HelpshiftUser.Builder(user.getString("identifier"), user.getString("email")).build();
+      }
 
-  @ReactMethod
-  public void loginWithEmail(String identifier, String email){
-      HelpshiftUser user = new HelpshiftUser.Builder(identifier, email)
-              .build();
-      Core.login(user);
-  }
-
-  @ReactMethod
-  public void loginWithName(String identifier, String name){
-      HelpshiftUser user = new HelpshiftUser.Builder(identifier, null)
-              .setName(name)
-              .build();
-      Core.login(user);
-  }
-
-  @ReactMethod
-  public void loginWithEmailAndName(String identifier, String email, String name){
-      HelpshiftUser user = new HelpshiftUser.Builder(identifier, email)
-              .setName(name)
-              .build();
-      Core.login(user);
+      Core.login(userBuilder);
   }
 
   @ReactMethod
@@ -95,6 +103,37 @@ public class RNHelpshiftModule extends ReactContextBaseJavaModule {
       ApiConfig apiConfig = new ApiConfig.Builder().setCustomIssueFields(getCustomIssueFields(cifs)).build();
       Support.showFAQs(activity, apiConfig);
   }
+
+  @ReactMethod
+  public void requestUnreadMessagesCount(){
+
+      // TODO: Is the correct place to create these?
+      countErrorHandler = new Handler() {
+          public void handleMessage(Message msg) {
+              super.handleMessage(msg);
+          }
+      };
+
+      countSuccessHandler = new Handler() {
+          public void handleMessage(Message msg) {
+              super.handleMessage(msg);
+              Bundle countData = (Bundle) msg.obj;
+              Integer count = countData.getInt("value");
+              WritableMap params = Arguments.createMap();
+              params.putInt("count", count);
+              sendEvent(mReactContext, "didReceiveUnreadMessagesCount", params);
+          }
+      };
+
+      Support.getNotificationCount(countSuccessHandler, countErrorHandler);
+  }
+
+  private void sendEvent(ReactContext reactContext, String eventName, @Nullable WritableMap params) {
+      reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+              .emit(eventName, params);
+  }
+
+
 
   private Map<String, String[]> getCustomIssueFields(ReadableMap cifs) {
       ReadableMapKeySetIterator iterator = cifs.keySetIterator();
