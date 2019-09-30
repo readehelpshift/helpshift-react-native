@@ -10,9 +10,6 @@ class Helpshift extends React.Component {
   render() {
     return <RNTHelpshift {...this.props} />;
   }
-  componentWillUnmount() {
-    subscription.remove();
-  }
 }
 
 Helpshift.propTypes = {
