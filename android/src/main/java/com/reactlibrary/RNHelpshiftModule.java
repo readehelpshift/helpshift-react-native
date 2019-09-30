@@ -53,21 +53,23 @@ public class RNHelpshiftModule extends ReactContextBaseJavaModule {
   @ReactMethod
   public void login(ReadableMap user){
       HelpshiftUser userBuilder;
+      String email = user.hasKey("email") ? user.getString("email") : null;
+      String indentifier = user.hasKey("indentifier") ? user.getString("indentifier") : null;
       if(user.hasKey("name") && user.hasKey("authToken")) {
-           userBuilder = new HelpshiftUser.Builder(user.getString("identifier"), user.getString("email"))
+           userBuilder = new HelpshiftUser.Builder(indentifier, email)
                    .setName(user.getString("name"))
                    .setAuthToken(user.getString("authToken"))
                    .build();
       } else if (user.hasKey("name")) {
-          userBuilder = new HelpshiftUser.Builder(user.getString("identifier"), user.getString("email"))
+          userBuilder = new HelpshiftUser.Builder(indentifier, email)
                   .setName(user.getString("name"))
                   .build();
       } else if (user.hasKey("authToken")) {
-          userBuilder = new HelpshiftUser.Builder(user.getString("identifier"), user.getString("email"))
+          userBuilder = new HelpshiftUser.Builder(indentifier, email)
                   .setAuthToken(user.getString("authToken"))
                   .build();
       } else {
-          userBuilder = new HelpshiftUser.Builder(user.getString("identifier"), user.getString("email")).build();
+          userBuilder = new HelpshiftUser.Builder(indentifier, email).build();
       }
 
       Core.login(userBuilder);
