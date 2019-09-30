@@ -24,7 +24,8 @@ Helpshift.propTypes = {
       email: PropTypes.string,
       name: PropTypes.string,
       authToken: PropTypes.string
-    })
+    }),
+    cifs: PropTypes.object
   }).isRequired
 };
 
@@ -50,7 +51,7 @@ Helpshift.showFAQsWithCIFs = cifs => RNHelpshift.showFAQsWithCIFs(cifs);
 Helpshift.requestUnreadMessagesCount = () => {
   return new Promise((resolve, reject) => {
     const subscription = HelpshiftEventEmitter.addListener('didReceiveUnreadMessagesCount',
-      count => {
+      ({ count }) => {
         resolve(count);
         subscription.remove();
       }
