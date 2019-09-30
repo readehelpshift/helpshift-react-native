@@ -115,6 +115,8 @@ RCT_CUSTOM_VIEW_PROPERTY(config, NSDictionary, RNTHelpshiftManager) {
     
     // Get the Helpshift conversation view controller.
     HelpshiftAPIConfigBuilder *builder = [HelpshiftAPIConfigBuilder new];
+    // Add CIFS if existing
+    if (json[@"cifs"]) builder.customIssueFields = json[@"cifs"];
     [HelpshiftSupport conversationViewControllerWithConfig:[builder build] completion:^(UIViewController *conversationVC) {
         UIViewController *rootController = UIApplication.sharedApplication.delegate.window.rootViewController;
         
