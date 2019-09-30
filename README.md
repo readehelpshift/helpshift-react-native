@@ -33,9 +33,58 @@
    compile project(':helpshift-react-native')
     ```
 
+## Helpshift Component
+#### Initialize
+```javascript
+import { 
+  Platform,
+  Dimensions,
+  View
+} from 'react-native';
+import Helpshift from 'helpshift-react-native';
 
-## Usage
+const user = {
+  identifier: 'YOUR_UNIQUE_ID', // required if no email
+  email: 'jane@doe.com', // required if no identifier
+  name: 'Jane Doe', // optional
+  authToken: 'XXXXXXXX=' // required if User Identity Verification is enabled
+}
 
+const cifs = {
+// 'key': ['type', 'value']
+   'number_of_rides': ['n', '12'],
+   'street': ['sl', '343 sansome'],
+   'new_customer': ['b', 'true']
+}
+
+// Where data types are mapped like so:
+// singleline => sl
+// multiline => ml
+// number => n
+// date => dt
+// dropdown => dd
+// checkbox => b
+
+const config = {
+  apiKey: 'HELPSHIFT_API_KEY',
+  domain: 'HELPSHIFT_DOMAIN',
+  appId: Platform.select({ ios: 'HELPSHIFT_IOS_APP_ID', android: 'HELPSHIFT_ANDROID_APP_ID' }),
+  width: Dimensions.get('window').width,//iOS only
+  height: Dimensions.get('window').height - 300, //iOS only
+  user: user,
+  cifs: cifs
+}
+
+render() {
+  return (
+    <View>
+      <Helpshift config={config} style={{ flex: 1, height: 500, width: 300}} />
+    </View 
+  )
+}
+```
+
+## API Usage
 #### Initialize
 ```javascript
 import { Platform } from 'react-native';
@@ -52,22 +101,13 @@ Helpshift.init(apiKey, domain, appId);
 
 #### Login
 ```javascript
-Helpshift.login(identifier)
-```
-
-#### Login with Email
-```javascript
-Helpshift.loginWithEmail(identifier, email)
-```
-
-#### Login with Name
-```javascript
-Helpshift.loginWithName(identifier, name)
-```
-
-#### Login with Email and Name
-```javascript
-Helpshift.loginWithEmailAndName(identifier, email, name)
+const user = {
+  identifier: 'YOUR_UNIQUE_ID', // required if no email
+  email: 'jane@doe.com', // required if no identifier
+  name: 'Jane Doe', // optional
+  authToken: 'XXXXXXXX=' // required if User Identity Verification is enabled
+}
+Helpshift.login(user)
 ```
 
 #### Logout
@@ -105,5 +145,16 @@ const cifs = {
 Helpshift.showConversationWithCIFs(cifs)
 // OR
 Helpshift.showFAQsWithCIFs(cifs)
+```
+
+#### Get Unread Message Count
+```javascript
+Helpshift.requestUnreadMessagesCount(); // returns Promise
+
+// example usage
+async _getUnreadMessagesCount(){
+  let count = await Helpshift.requestUnreadMessagesCount();
+  this.setState({ unreadMessages: count });
+}
 ```
   
