@@ -31,7 +31,7 @@ Helpshift.propTypes = {
 
 const { RNHelpshift } = NativeModules;
 
-const HelpshiftEventEmitter = new NativeEventEmitter(RNHelpshift);
+const HelpshiftEventEmitter = Helpshift.eventEmitter = new NativeEventEmitter(RNHelpshift);
 
 Helpshift.init = (apiKey, domain, appId) => RNHelpshift.init(apiKey, domain, appId);
 
@@ -50,7 +50,7 @@ Helpshift.showFAQsWithCIFs = cifs => RNHelpshift.showFAQsWithCIFs(cifs);
 
 Helpshift.requestUnreadMessagesCount = () => {
   return new Promise((resolve, reject) => {
-    const subscription = HelpshiftEventEmitter.addListener('didReceiveUnreadMessagesCount',
+    const subscription = HelpshiftEventEmitter.addListener('Helpshift/DidReceiveUnreadMessagesCount',
       ({ count }) => {
         resolve(count);
         subscription.remove();
