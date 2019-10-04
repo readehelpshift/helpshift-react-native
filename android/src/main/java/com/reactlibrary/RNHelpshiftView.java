@@ -1,6 +1,7 @@
 package com.reactlibrary;
 
 import android.app.Application;
+import android.content.Context;
 import android.graphics.Color;
 import android.util.Log;
 import android.widget.FrameLayout;
@@ -18,6 +19,7 @@ import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.annotations.ReactProp;
 import com.helpshift.Core;
 import com.helpshift.HelpshiftUser;
+import com.helpshift.activities.MainActivity;
 import com.helpshift.delegate.AuthenticationFailureReason;
 import com.helpshift.exceptions.InstallException;
 import com.helpshift.support.ApiConfig;
@@ -29,7 +31,11 @@ import java.util.Map;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+
+import com.google.android.gms.maps.MapFragment;
 
 public class RNHelpshiftView extends SimpleViewManager<FrameLayout> implements Support.Delegate {
 
@@ -76,30 +82,30 @@ public class RNHelpshiftView extends SimpleViewManager<FrameLayout> implements S
         // Fragment helpshiftFragment = Support.getConversationFragment(mReactContext.getCurrentActivity());
         // mReactContext.getCurrentActivity().getFragmentManager().beginTransaction().add(frameLayout.getId(), helpshiftFragment).commit();
 
-         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, 0);
-         frameLayout.setLayoutParams(lp);
-         frameLayout.setBackgroundColor(Color.parseColor("purple"));
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, 0);
+        frameLayout.setLayoutParams(lp);
+        frameLayout.setBackgroundColor(Color.parseColor("purple"));
     }
 
     private void login(ReadableMap user){
         HelpshiftUser userBuilder;
         String email = user.hasKey("email") ? user.getString("email") : null;
-        String indentifier = user.hasKey("indentifier") ? user.getString("indentifier") : null;
+        String identifier = user.hasKey("identifier") ? user.getString("identifier") : null;
         if(user.hasKey("name") && user.hasKey("authToken")) {
-            userBuilder = new HelpshiftUser.Builder(indentifier, email)
+            userBuilder = new HelpshiftUser.Builder(identifier, email)
                     .setName(user.getString("name"))
                     .setAuthToken(user.getString("authToken"))
                     .build();
         } else if (user.hasKey("name")) {
-            userBuilder = new HelpshiftUser.Builder(indentifier, email)
+            userBuilder = new HelpshiftUser.Builder(identifier, email)
                     .setName(user.getString("name"))
                     .build();
         } else if (user.hasKey("authToken")) {
-            userBuilder = new HelpshiftUser.Builder(indentifier, email)
+            userBuilder = new HelpshiftUser.Builder(identifier, email)
                     .setAuthToken(user.getString("authToken"))
                     .build();
         } else {
-            userBuilder = new HelpshiftUser.Builder(indentifier, email).build();
+            userBuilder = new HelpshiftUser.Builder(identifier, email).build();
         }
 
         Core.login(userBuilder);
@@ -125,48 +131,72 @@ public class RNHelpshiftView extends SimpleViewManager<FrameLayout> implements S
 
     @Override
     public void sessionBegan() {
-      Log.d("Helpshift", "sessionBegan");
+        Log.d("Helpshift", "sessionBegan");
+        sendEvent(mReactContext, "Helpshift/SessionBegan", Arguments.createMap());
     }
 
     @Override
     public void sessionEnded() {
-      Log.d("Helpshift", "sessionEnded");
-      sendEvent(mReactContext, "helpshiftSessionEnded", Arguments.createMap());
+        Log.d("Helpshift", "sessionEnded");
+        sendEvent(mReactContext, "Helpshift/SessionEnded", Arguments.createMap());
     }
 
     @Override
     public void newConversationStarted(String newConversationMessage) {
-      Log.d("Helpshift", "newConversationStarted");
+        Log.d("Helpshift", "newConversationStarted");
+        WritableMap params = Arguments.createMap();
+        params.putString("newConversationMessage", newConversationMessage);
+        sendEvent(mReactContext, "Helpshift/NewConversationStarted", params);
     }
 
     @Override
     public void conversationEnded() {
-      Log.d("Helpshift", "conversationEnded");
+        Log.d("Helpshift", "conversationEnded");
+        sendEvent(mReactContext, "Helpshift/ConversationEnded", Arguments.createMap());
     }
 
     @Override
     public void userRepliedToConversation(String newMessage) {
-      Log.d("Helpshift", "userRepliedToConversation");
+        Log.d("Helpshift", "newConversationStarted");
+        WritableMap params = Arguments.createMap();
+        params.putString("newMessage", newMessage);
+        sendEvent(mReactContext, "Helpshift/UserRepliedToConversation", params);
     }
 
     @Override
     public void userCompletedCustomerSatisfactionSurvey(int rating, String feedback) {
-      Log.d("Helpshift", "userCompletedCustomerSatisfactionSurvey");
+        Log.d("Helpshift", "userCompletedCustomerSatisfactionSurvey");
+        WritableMap params = Arguments.createMap();
+        params.putInt("rating", rating);
+        params.putString("feedback", feedback);
+        sendEvent(mReactContext, "Helpshift/UserCompletedCustomerSatisfactionSurvey", params);
     }
 
+
+//    TODO: determine if File can be sent by React Native bridge
     @Override
     public void displayAttachmentFile(File attachmentFile) {
-      Log.d("Helpshift", "displayAttachmentFile");
+//        Log.d("Helpshift", "displayAttachmentFile");
+//        WritableMap params = Arguments.createMap();
+//        params.putString("attachmentFile", attachmentFile.toString());
+//        sendEvent(mReactContext, "Helpshift/DisplayAttachmentFile", params);
     }
 
     @Override
     public void didReceiveNotification(int newMessagesCount) {
-      Log.d("Helpshift", "didReceiveNotification");
+        Log.d("Helpshift", "didReceiveNotification");
+        WritableMap params = Arguments.createMap();
+        params.putInt("newMessagesCount", newMessagesCount);
+        sendEvent(mReactContext, "Helpshift/DidReceiveNotification", params);
     }
 
     @Override
     public void authenticationFailed(HelpshiftUser user, AuthenticationFailureReason reason) {
-      Log.d("Helpshift", "authenticationFailed");
+        Log.d("Helpshift", "authenticationFailed");
+        WritableMap params = Arguments.createMap();
+        params.putString("user", user.toString());
+        params.putString("reason", reason.toString());
+        sendEvent(mReactContext, "Helpshift/AuthenticationFailed", params);
     }
 
 }
