@@ -35,8 +35,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
-import com.google.android.gms.maps.MapFragment;
-
 public class RNHelpshiftView extends SimpleViewManager<FrameLayout> implements Support.Delegate {
 
     public static final String REACT_CLASS = "RNTHelpshift";
