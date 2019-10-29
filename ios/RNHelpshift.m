@@ -177,11 +177,11 @@ RCT_CUSTOM_VIEW_PROPERTY(config, NSDictionary, RNTHelpshiftManager) {
     // Add CIFS if existing
     if (json[@"cifs"]) builder.customIssueFields = json[@"cifs"];
     [HelpshiftSupport conversationViewControllerWithConfig:[builder build] completion:^(UIViewController *conversationVC) {
-        UIViewController *rootController = UIApplication.sharedApplication.delegate.window.rootViewController;
-        
+        UIViewController *rootController = [[ExpoKit sharedInstance] currentViewController];
+
         UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:conversationVC];
         [navController willMoveToParentViewController:rootController];
-        
+
         if (json[@"height"] && json[@"width"]) {
             float height = [json[@"height"] floatValue];
             float width = [json[@"width"] floatValue];
@@ -202,4 +202,4 @@ RCT_CUSTOM_VIEW_PROPERTY(config, NSDictionary, RNTHelpshiftManager) {
 }
 
 @end
-  
+
