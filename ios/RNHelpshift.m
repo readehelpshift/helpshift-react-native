@@ -9,6 +9,8 @@
 #import "HelpshiftCore.h"
 #import "HelpshiftSupport.h"
 
+#import "ExpoKit.h"
+
 @implementation RNHelpshift
 
 -(id) init {
