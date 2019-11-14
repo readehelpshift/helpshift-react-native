@@ -79,10 +79,9 @@ public class RNHelpshiftView extends SimpleViewManager<FrameLayout> implements S
 
         // Fragment helpshiftFragment = Support.getConversationFragment(mReactContext.getCurrentActivity());
         // mReactContext.getCurrentActivity().getFragmentManager().beginTransaction().add(frameLayout.getId(), helpshiftFragment).commit();
-
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, 0);
-        frameLayout.setLayoutParams(lp);
-        frameLayout.setBackgroundColor(Color.parseColor("purple"));
+        // LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, 0);
+        // frameLayout.setLayoutParams(lp);
+        // frameLayout.setBackgroundColor(Color.parseColor("purple"));
     }
 
     private void login(ReadableMap user){
