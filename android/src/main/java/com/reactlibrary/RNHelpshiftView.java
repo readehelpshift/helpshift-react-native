@@ -35,8 +35,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
-import com.google.android.gms.maps.MapFragment;
-
 public class RNHelpshiftView extends SimpleViewManager<FrameLayout> implements Support.Delegate {
 
     public static final String REACT_CLASS = "RNTHelpshift";
@@ -81,10 +79,9 @@ public class RNHelpshiftView extends SimpleViewManager<FrameLayout> implements S
 
         // Fragment helpshiftFragment = Support.getConversationFragment(mReactContext.getCurrentActivity());
         // mReactContext.getCurrentActivity().getFragmentManager().beginTransaction().add(frameLayout.getId(), helpshiftFragment).commit();
-
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, 0);
-        frameLayout.setLayoutParams(lp);
-        frameLayout.setBackgroundColor(Color.parseColor("purple"));
+        // LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, 0);
+        // frameLayout.setLayoutParams(lp);
+        // frameLayout.setBackgroundColor(Color.parseColor("purple"));
     }
 
     private void login(ReadableMap user){
