@@ -58,6 +58,7 @@ RCT_EXPORT_METHOD(showConversation)
 RCT_EXPORT_METHOD(showConversationWithCIFs:(NSDictionary *)cifs)
 {
     HelpshiftAPIConfigBuilder *builder = [[HelpshiftAPIConfigBuilder alloc] init];
+    builder.enableAutomaticThemeSwitching = YES;
     builder.customIssueFields = cifs;
     HelpshiftAPIConfig *apiConfig = [builder build];
     UIViewController *rootController = UIApplication.sharedApplication.delegate.window.rootViewController;
@@ -202,4 +203,3 @@ RCT_CUSTOM_VIEW_PROPERTY(config, NSDictionary, RNTHelpshiftManager) {
 }
 
 @end
-  
