@@ -205,4 +205,3 @@ RCT_CUSTOM_VIEW_PROPERTY(config, NSDictionary, RNTHelpshiftManager) {
 }
 
 @end
-
