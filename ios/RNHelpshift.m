@@ -183,6 +183,7 @@ RCT_CUSTOM_VIEW_PROPERTY(config, NSDictionary, RNTHelpshiftManager) {
 
         UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:conversationVC];
         [navController willMoveToParentViewController:rootController];
+        [navController.navigationBar setHidden:YES];
 
         if (json[@"height"] && json[@"width"]) {
             float height = [json[@"height"] floatValue];
