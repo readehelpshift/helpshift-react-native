@@ -1,4 +1,5 @@
 
+
 # helpshift-react-native
 
 ## Getting started
@@ -84,6 +85,29 @@ render() {
 }
 ```
 
+### IMPORTANT FOR USING COMPONENT ON ANDROID
+You must inherit style from Helpshift Themes to use the `<Helpshift/>` component in your app like so:
+
+```
+<application>
+  <activity
+  android:theme="@style/HelpshiftTheme.Light.DarkActionBar">
+  </activity>
+</application>
+```
+
+The options for default themes are:
+
+- Helpshift.Theme.Light.DarkActionBar
+- Helpshift.Theme.Light
+- Helpshift.Theme.Dark
+- Helpshift.Theme.HighContrast
+- Helpshift.Theme.DayNight.DarkActionBar
+- Helpshift.Theme.DayNight.Light
+- Helpshift.Theme.DayNight.HighContrast
+
+If you would like to customize these themes please refer to Helpshift style guide [here](https://developers.helpshift.com/android/design/#skinning)
+
 ## API Usage
 #### Initialize
 ```javascript
@@ -157,4 +181,3 @@ async _getUnreadMessagesCount(){
   this.setState({ unreadMessages: count });
 }
 ```
-  
