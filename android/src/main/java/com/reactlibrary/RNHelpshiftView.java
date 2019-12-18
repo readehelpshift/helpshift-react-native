@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.Application;
 import android.net.Uri;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewTreeObserver;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactContext;
@@ -12,12 +14,14 @@ import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.ReadableMapKeySetIterator;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
-import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
+import com.facebook.react.uimanager.ViewGroupManager;
 import com.facebook.react.uimanager.annotations.ReactProp;
 import com.facebook.react.views.view.ReactViewGroup;
+
 import com.helpshift.Core;
 import com.helpshift.HelpshiftUser;
+import com.helpshift.InstallConfig;
 import com.helpshift.delegate.AuthenticationFailureReason;
 import com.helpshift.exceptions.InstallException;
 import com.helpshift.support.ApiConfig;
@@ -31,9 +35,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
-public class RNHelpshiftView extends SimpleViewManager<ReactViewGroup> implements Support.Delegate {
+public class RNHelpshiftView extends ViewGroupManager<ReactViewGroup> implements Support.Delegate {
 
     public static final String REACT_CLASS = "RNTHelpshift";
 
@@ -46,8 +49,8 @@ public class RNHelpshiftView extends SimpleViewManager<ReactViewGroup> implement
     }
 
     @Override
-    public ReactViewGroup createViewInstance(ThemedReactContext context) {
-        ReactViewGroup reactView = new ReactViewGroup(context);
+    public ReactViewGroup createViewInstance(ThemedReactContext context)  {
+        final ReactViewGroup reactView = new ReactViewGroup(context);
 
         mReactContext = context;
 
@@ -57,40 +60,48 @@ public class RNHelpshiftView extends SimpleViewManager<ReactViewGroup> implement
     }
 
     @ReactProp(name = "config")
-    public void setConfig(ReactViewGroup reactView, ReadableMap config) throws InstallException {
+    public void setConfig(final ReactViewGroup reactView, ReadableMap config) {
         Support.setDelegate(this);
         Core.init(Support.getInstance());
-        Core.install(mApplication,  config.getString("apiKey"),  config.getString("domain"),  config.getString("appId"));
+        InstallConfig installConfig = new InstallConfig.Builder().build();
+        try {
+            Core.install(mApplication,  config.getString("apiKey"),  config.getString("domain"),  config.getString("appId"), installConfig);
+        } catch (InstallException e) {
+            Log.e("Helpshift", "invalid install credentials : ", e);
+        }
 
         if (config.hasKey("user")) {
             this.login(config.getMap("user"));
         }
 
+        Activity activity = mReactContext.getCurrentActivity();
+        final FragmentManager fragmentManager = ((AppCompatActivity)activity).getSupportFragmentManager();
+        final Fragment helpshiftFragment;
+        Map<String, Object> extras = new HashMap<>();
+        extras.put("enableDefaultConversationalFiling", true);
 
-        // TODO: USE FRAGMENT INSTEAD
         if (config.hasKey("cifs")) {
-            ApiConfig apiConfig = new ApiConfig.Builder().setCustomIssueFields(getCustomIssueFields(config.getMap("cifs"))).build();
-            Support.showConversation(mReactContext.getCurrentActivity(), apiConfig);
+            ApiConfig apiConfig = new ApiConfig.Builder().setExtras(extras).setCustomIssueFields(getCustomIssueFields(config.getMap("cifs"))).build();
+            helpshiftFragment = Support.getConversationFragment(activity, apiConfig);
         } else {
-            Support.showConversation(mReactContext.getCurrentActivity());
+            ApiConfig apiConfig = new ApiConfig.Builder().setExtras(extras).build();
+            helpshiftFragment = Support.getConversationFragment(activity, apiConfig);
         }
 
-//         Activity activity = mReactContext.getCurrentActivity();
-//         FragmentManager fragmentManager = ((AppCompatActivity)activity).getSupportFragmentManager();
-//
-//         Fragment helpshiftFragment;
-//         if (config.hasKey("cifs")) {
-//             ApiConfig apiConfig = new ApiConfig.Builder().setCustomIssueFields(getCustomIssueFields(config.getMap("cifs"))).build();
-//             helpshiftFragment = Support.getConversationFragment(activity, apiConfig);
-//             // helpshiftFragment = Support.getFAQsFragment(activity, apiConfig);
-//         } else {
-//             helpshiftFragment = Support.getConversationFragment(activity);
-//             // helpshiftFragment = Support.getFAQsFragment(activity);
-//         }
-//
-//         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//         fragmentTransaction.add(reactView.getId(), helpshiftFragment);
-//         fragmentTransaction.commit();
+        reactView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                fragmentManager.executePendingTransactions();
+                for (int i = 0; i < reactView.getChildCount(); i++) {
+                    View child = reactView.getChildAt(i);
+                    child.measure(View.MeasureSpec.makeMeasureSpec(reactView.getMeasuredWidth(), View.MeasureSpec.EXACTLY),
+                            View.MeasureSpec.makeMeasureSpec(reactView.getMeasuredHeight(), View.MeasureSpec.EXACTLY));
+                    child.layout(0, 0, child.getMeasuredWidth(), child.getMeasuredHeight());
+                }
+            }
+        });
+
+        fragmentManager.beginTransaction().replace(reactView.getId(), helpshiftFragment).commit();
     }
 
     private void login(ReadableMap user){
@@ -163,7 +174,7 @@ public class RNHelpshiftView extends SimpleViewManager<ReactViewGroup> implement
 
     @Override
     public void userRepliedToConversation(String newMessage) {
-        Log.d("Helpshift", "newConversationStarted");
+        Log.d("Helpshift", "userRepliedToConversation");
         WritableMap params = Arguments.createMap();
         params.putString("newMessage", newMessage);
         sendEvent(mReactContext, "Helpshift/UserRepliedToConversation", params);
