@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <style name="HelpshiftTheme.Light.DarkActionBar" parent="Helpshift.Theme.Light.DarkActionBar" />
     <style name="HelpshiftTheme.Light" parent="Helpshift.Theme.Light" />
     <style name="HelpshiftTheme.Dark" parent="Helpshift.Theme.Dark" />
     <style name="HelpshiftTheme.HighContrast" parent="Helpshift.Theme.HighContrast" />
