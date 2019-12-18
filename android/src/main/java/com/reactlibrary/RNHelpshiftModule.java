@@ -1,5 +1,5 @@
 
-package com.reactlibrary;
+package com.helpshift.reactlibrary;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;

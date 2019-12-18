@@ -1,4 +1,4 @@
-package com.reactlibrary;
+package com.helpshift.reactlibrary;
 
 import android.app.Activity;
 import android.app.Application;
