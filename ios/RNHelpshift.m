@@ -34,8 +34,10 @@ RCT_EXPORT_MODULE()
 
 RCT_EXPORT_METHOD(init:(NSString *)apiKey domain:(NSString *)domain appId:(NSString *)appId)
 {
+    HelpshiftInstallConfigBuilder *installConfigBuilder = [[HelpshiftInstallConfigBuilder alloc] init];
+    installConfigBuilder.enableAutomaticThemeSwitching = YES;
     [HelpshiftCore initializeWithProvider:[HelpshiftSupport sharedInstance]];
-    [HelpshiftCore installForApiKey:apiKey domainName:domain appID:appId];   
+    [HelpshiftCore installForApiKey:apiKey domainName:domain appID:appId withConfig:installConfigBuilder.build];
 }
 
 RCT_EXPORT_METHOD(login:(NSDictionary *)user)
@@ -160,10 +162,13 @@ RCT_EXPORT_METHOD(requestUnreadMessagesCount)
 RCT_EXPORT_MODULE(RNTHelpshift)
 
 RCT_CUSTOM_VIEW_PROPERTY(config, NSDictionary, RNTHelpshiftManager) {
+    HelpshiftInstallConfigBuilder *installConfigBuilder = [[HelpshiftInstallConfigBuilder alloc] init];
+    installConfigBuilder.enableAutomaticThemeSwitching = YES;
     [HelpshiftCore initializeWithProvider:[HelpshiftSupport sharedInstance]];
     [HelpshiftCore installForApiKey:json[@"apiKey"]
                          domainName:json[@"domain"]
-                              appID:json[@"appId"]];
+                              appID:json[@"appId"]
+                         withConfig:installConfigBuilder.build];
 
     // Log user in if identified
     if (json[@"user"]) {
