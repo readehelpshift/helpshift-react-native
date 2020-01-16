@@ -27,10 +27,10 @@ declare class Helpshift extends React.PureComponent<HelpshiftProps> {
     static showFAQs: () => any;
     static requestUnreadMessagesCount: () => any;
     static eventEmitter: import("react-native").EventEmitter | {
-        once: () => null;
-        addListener: () => null;
-        removeListener: () => null;
-        removeAllListeners: () => null;
+        once: () => void;
+        addListener: () => void;
+        removeListener: () => void;
+        removeAllListeners: () => void;
     };
 }
 export default Helpshift;

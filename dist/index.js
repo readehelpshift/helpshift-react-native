@@ -12,10 +12,10 @@ function getHelp() {
 const RNTHelpshift = getHelp();
 const { RNHelpshift } = NativeModules;
 const mockEmitter = {
-    once: () => null,
-    addListener: () => null,
-    removeListener: () => null,
-    removeAllListeners: () => null
+    once: () => console.warn(MODULE_UNAVAILABLE_WARNING),
+    addListener: () => console.warn(MODULE_UNAVAILABLE_WARNING),
+    removeListener: () => console.warn(MODULE_UNAVAILABLE_WARNING),
+    removeAllListeners: () => console.warn(MODULE_UNAVAILABLE_WARNING)
 };
 const MODULE_UNAVAILABLE_WARNING = "Native module unavailable in project binary.";
 class Helpshift extends React.PureComponent {
