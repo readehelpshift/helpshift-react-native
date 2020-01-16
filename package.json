@@ -14,13 +14,11 @@
   "author": "Reade Lobdill",
   "license": "",
   "peerDependencies": {
+    "react": "16.9.0",
     "react-native": "^0.41.2"
   },
-  "dependencies": {
-    "@types/react-native": "^0.57.38",
-    "react": "16.9.0"
-  },
   "devDependencies": {
+    "@types/react-native": "^0.57.38",
     "typescript": "^3.3.1"
   }
 }
