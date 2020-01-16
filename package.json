@@ -1,11 +1,12 @@
 {
   "name": "helpshift-react-native",
-  "version": "7.6.2",
+  "version": "7.6.3",
   "description": "Helpshift React Native wrapper",
   "homepage": "https://github.com/readehelpshift/helpshift-react-native",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc"
   },
   "keywords": [
     "react-native"
@@ -13,9 +14,11 @@
   "author": "Reade Lobdill",
   "license": "",
   "peerDependencies": {
+    "react": "16.9.0",
     "react-native": "^0.41.2"
   },
-  "dependencies": {
-    "prop-types": "^15.7.2"
+  "devDependencies": {
+    "@types/react-native": "^0.57.38",
+    "typescript": "^3.3.1"
   }
 }
