@@ -72,11 +72,6 @@ class Helpshift extends React.PureComponent<HelpshiftProps> {
       ? RNHelpshift.logout()
       : console.warn(MODULE_UNAVAILABLE_WARNING);
 
-  static showFAQs = () =>
-    RNHelpshift
-      ? RNHelpshift.showFAQs()
-      : console.warn(MODULE_UNAVAILABLE_WARNING);
-
   static requestUnreadMessagesCount = () =>
     RNHelpshift
       ? RNHelpshift.requestUnreadMessagesCount()

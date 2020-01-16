@@ -33,9 +33,6 @@ Helpshift.login = (user) => RNHelpshift
 Helpshift.logout = () => RNHelpshift
     ? RNHelpshift.logout()
     : console.warn(MODULE_UNAVAILABLE_WARNING);
-Helpshift.showFAQs = () => RNHelpshift
-    ? RNHelpshift.showFAQs()
-    : console.warn(MODULE_UNAVAILABLE_WARNING);
 Helpshift.requestUnreadMessagesCount = () => RNHelpshift
     ? RNHelpshift.requestUnreadMessagesCount()
     : console.warn(MODULE_UNAVAILABLE_WARNING);
