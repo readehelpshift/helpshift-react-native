@@ -30,12 +30,10 @@ interface HelpshiftProps {
 }
 
 function getHelp() {
-  try {
-    const loaded = requireNativeComponent("RNTHelpshift");
-    return loaded;
-  } catch {
-    return View;
+  if ("RNTHelpshift" in NativeModules.UIManager) {
+    return requireNativeComponent("RNTHelpshift");
   }
+  return View;
 }
 
 const RNTHelpshift = getHelp();

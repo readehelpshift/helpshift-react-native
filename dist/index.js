@@ -1,13 +1,10 @@
 import React from "react";
 import { NativeEventEmitter, NativeModules, requireNativeComponent, View } from "react-native";
 function getHelp() {
-    try {
-        const loaded = requireNativeComponent("RNTHelpshift");
-        return loaded;
+    if ("RNTHelpshift" in NativeModules.UIManager) {
+        return requireNativeComponent("RNTHelpshift");
     }
-    catch (_a) {
-        return View;
-    }
+    return View;
 }
 const RNTHelpshift = getHelp();
 const { RNHelpshift } = NativeModules;
