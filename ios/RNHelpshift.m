@@ -35,7 +35,7 @@ RCT_EXPORT_MODULE()
 RCT_EXPORT_METHOD(init:(NSString *)apiKey domain:(NSString *)domain appId:(NSString *)appId)
 {
     HelpshiftInstallConfigBuilder *installConfigBuilder = [[HelpshiftInstallConfigBuilder alloc] init];
-    installConfigBuilder.enableAutomaticThemeSwitching = YES;
+    installConfigBuilder.enableAutomaticThemeSwitching = NO;
     [HelpshiftCore initializeWithProvider:[HelpshiftSupport sharedInstance]];
     [HelpshiftCore installForApiKey:apiKey domainName:domain appID:appId withConfig:installConfigBuilder.build];
 }
