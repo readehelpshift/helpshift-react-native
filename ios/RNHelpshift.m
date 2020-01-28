@@ -5,7 +5,6 @@
 #import <React/RCTEventEmitter.h>
 
 #import "RNHelpshift.h"
-
 #import "HelpshiftCore.h"
 #import "HelpshiftSupport.h"
 
@@ -208,7 +207,20 @@ RCT_CUSTOM_VIEW_PROPERTY(config, NSDictionary, RNTHelpshiftManager) {
     controller = presentedController;
     presentedController = controller.presentedViewController;
   }
-  return controller;
+
+  // For Expo client, use the same logic as in ExpoKit currentViewController but this isn't a unimodule
+  // so adapt it for here
+  if ([controller respondsToSelector:@selector(contentViewController)]) {
+    UIViewController *contentController = [controller performSelector:@selector(contentViewController)];
+        if (contentController != nil) {
+            controller = contentController;
+            while (controller.presentedViewController != nil) {
+            controller = controller.presentedViewController;
+            }
+        }
+    }
+
+    return controller;
 }
 
 - (UIView *)view
