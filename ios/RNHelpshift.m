@@ -1,15 +1,13 @@
 
-#import "RCTLog.h"
-#import "RCTViewManager.h"
-#import "RCTBridgeModule.h"
-#import "RCTEventEmitter.h"
+#import <React/RCTLog.h>
+#import <React/RCTViewManager.h>
+#import <React/RCTBridgeModule.h>
+#import <React/RCTEventEmitter.h>
 
 #import "RNHelpshift.h"
 
 #import "HelpshiftCore.h"
 #import "HelpshiftSupport.h"
-
-#import "ExpoKit.h"
 
 @implementation RNHelpshift
 
@@ -184,7 +182,7 @@ RCT_CUSTOM_VIEW_PROPERTY(config, NSDictionary, RNTHelpshiftManager) {
     // Add CIFS if existing
     if (json[@"cifs"]) builder.customIssueFields = json[@"cifs"];
     [HelpshiftSupport conversationViewControllerWithConfig:[builder build] completion:^(UIViewController *conversationVC) {
-        UIViewController *rootController = [[ExpoKit sharedInstance] currentViewController];
+        UIViewController *rootController = [self currentViewController];
 
         UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:conversationVC];
         [navController willMoveToParentViewController:rootController];
@@ -200,6 +198,17 @@ RCT_CUSTOM_VIEW_PROPERTY(config, NSDictionary, RNTHelpshiftManager) {
         [rootController addChildViewController:navController];
         [navController didMoveToParentViewController:rootController];
     }];
+}
+
+- (UIViewController *)currentViewController {
+  UIViewController *controller = [[[UIApplication sharedApplication] keyWindow] rootViewController];
+  UIViewController *presentedController = controller.presentedViewController;
+
+  while (presentedController && ![presentedController isBeingDismissed]) {
+    controller = presentedController;
+    presentedController = controller.presentedViewController;
+  }
+  return controller;
 }
 
 - (UIView *)view
