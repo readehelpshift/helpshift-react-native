@@ -1,15 +1,12 @@
 
-#import "RCTLog.h"
-#import "RCTViewManager.h"
-#import "RCTBridgeModule.h"
-#import "RCTEventEmitter.h"
+#import <React/RCTLog.h>
+#import <React/RCTViewManager.h>
+#import <React/RCTBridgeModule.h>
+#import <React/RCTEventEmitter.h>
 
 #import "RNHelpshift.h"
-
 #import "HelpshiftCore.h"
 #import "HelpshiftSupport.h"
-
-#import "ExpoKit.h"
 
 @implementation RNHelpshift
 
@@ -34,8 +31,10 @@ RCT_EXPORT_MODULE()
 
 RCT_EXPORT_METHOD(init:(NSString *)apiKey domain:(NSString *)domain appId:(NSString *)appId)
 {
+    HelpshiftInstallConfigBuilder *installConfigBuilder = [[HelpshiftInstallConfigBuilder alloc] init];
+    installConfigBuilder.enableAutomaticThemeSwitching = NO;
     [HelpshiftCore initializeWithProvider:[HelpshiftSupport sharedInstance]];
-    [HelpshiftCore installForApiKey:apiKey domainName:domain appID:appId];   
+    [HelpshiftCore installForApiKey:apiKey domainName:domain appID:appId withConfig:installConfigBuilder.build];
 }
 
 RCT_EXPORT_METHOD(login:(NSDictionary *)user)
@@ -160,10 +159,13 @@ RCT_EXPORT_METHOD(requestUnreadMessagesCount)
 RCT_EXPORT_MODULE(RNTHelpshift)
 
 RCT_CUSTOM_VIEW_PROPERTY(config, NSDictionary, RNTHelpshiftManager) {
+    HelpshiftInstallConfigBuilder *installConfigBuilder = [[HelpshiftInstallConfigBuilder alloc] init];
+    installConfigBuilder.enableAutomaticThemeSwitching = NO;
     [HelpshiftCore initializeWithProvider:[HelpshiftSupport sharedInstance]];
     [HelpshiftCore installForApiKey:json[@"apiKey"]
                          domainName:json[@"domain"]
-                              appID:json[@"appId"]];
+                              appID:json[@"appId"]
+                         withConfig:installConfigBuilder.build];
 
     // Log user in if identified
     if (json[@"user"]) {
@@ -179,7 +181,7 @@ RCT_CUSTOM_VIEW_PROPERTY(config, NSDictionary, RNTHelpshiftManager) {
     // Add CIFS if existing
     if (json[@"cifs"]) builder.customIssueFields = json[@"cifs"];
     [HelpshiftSupport conversationViewControllerWithConfig:[builder build] completion:^(UIViewController *conversationVC) {
-        UIViewController *rootController = [[ExpoKit sharedInstance] currentViewController];
+        UIViewController *rootController = [self currentViewController];
 
         UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:conversationVC];
         [navController willMoveToParentViewController:rootController];
@@ -197,6 +199,30 @@ RCT_CUSTOM_VIEW_PROPERTY(config, NSDictionary, RNTHelpshiftManager) {
     }];
 }
 
+- (UIViewController *)currentViewController {
+  UIViewController *controller = [[[UIApplication sharedApplication] keyWindow] rootViewController];
+  UIViewController *presentedController = controller.presentedViewController;
+
+  while (presentedController && ![presentedController isBeingDismissed]) {
+    controller = presentedController;
+    presentedController = controller.presentedViewController;
+  }
+
+  // For Expo client, use the same logic as in ExpoKit currentViewController but this isn't a unimodule
+  // so adapt it for here
+  if ([controller respondsToSelector:@selector(contentViewController)]) {
+    UIViewController *contentController = [controller performSelector:@selector(contentViewController)];
+        if (contentController != nil) {
+            controller = contentController;
+            while (controller.presentedViewController != nil) {
+            controller = controller.presentedViewController;
+            }
+        }
+    }
+
+    return controller;
+}
+
 - (UIView *)view
 {
     UIView *view = [[UIView alloc] init];
@@ -205,4 +231,3 @@ RCT_CUSTOM_VIEW_PROPERTY(config, NSDictionary, RNTHelpshiftManager) {
 }
 
 @end
-
