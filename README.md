@@ -1,5 +1,6 @@
 
 
+
 # helpshift-react-native
 
 ## Getting started
@@ -34,79 +35,6 @@
    compile project(':helpshift-react-native')
     ```
 
-## Helpshift Component
-#### Initialize
-```javascript
-import { 
-  Platform,
-  Dimensions,
-  View
-} from 'react-native';
-import Helpshift from 'helpshift-react-native';
-
-const user = {
-  identifier: 'YOUR_UNIQUE_ID', // required if no email
-  email: 'jane@doe.com', // required if no identifier
-  name: 'Jane Doe', // optional
-  authToken: 'XXXXXXXX=' // required if User Identity Verification is enabled
-}
-
-const cifs = {
-// 'key': ['type', 'value']
-   'number_of_rides': ['n', '12'],
-   'street': ['sl', '343 sansome'],
-   'new_customer': ['b', 'true']
-}
-
-// Where data types are mapped like so:
-// singleline => sl
-// multiline => ml
-// number => n
-// date => dt
-// dropdown => dd
-// checkbox => b
-
-const config = {
-  apiKey: 'HELPSHIFT_API_KEY',
-  domain: 'HELPSHIFT_DOMAIN',
-  appId: Platform.select({ ios: 'HELPSHIFT_IOS_APP_ID', android: 'HELPSHIFT_ANDROID_APP_ID' }),
-  width: Dimensions.get('window').width,//iOS only
-  height: Dimensions.get('window').height - 300, //iOS only
-  user: user,
-  cifs: cifs
-}
-
-render() {
-  return (
-    <View>
-      <Helpshift config={config} style={{ flex: 1, height: 500, width: 300}} />
-    </View 
-  )
-}
-```
-
-### IMPORTANT FOR USING COMPONENT ON ANDROID
-You must inherit style from Helpshift Themes to use the `<Helpshift/>` component in your app like so:
-
-```
-<application>
-  <activity
-  android:theme="@style/HelpshiftTheme.Light.DarkActionBar">
-  </activity>
-</application>
-```
-
-The options for default themes are:
-
-- Helpshift.Theme.Light.DarkActionBar
-- Helpshift.Theme.Light
-- Helpshift.Theme.Dark
-- Helpshift.Theme.HighContrast
-- Helpshift.Theme.DayNight.DarkActionBar
-- Helpshift.Theme.DayNight.Light
-- Helpshift.Theme.DayNight.HighContrast
-
-If you would like to customize these themes please refer to Helpshift style guide [here](https://developers.helpshift.com/android/design/#skinning)
 
 ## API Usage
 #### Initialize
@@ -169,15 +97,4 @@ const cifs = {
 Helpshift.showConversationWithCIFs(cifs)
 // OR
 Helpshift.showFAQsWithCIFs(cifs)
-```
-
-#### Get Unread Message Count
-```javascript
-Helpshift.requestUnreadMessagesCount(); // returns Promise
-
-// example usage
-async _getUnreadMessagesCount(){
-  let count = await Helpshift.requestUnreadMessagesCount();
-  this.setState({ unreadMessages: count });
-}
 ```
