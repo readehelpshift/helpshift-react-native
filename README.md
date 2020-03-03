@@ -1,7 +1,7 @@
-
-
-
 # helpshift-react-native
+
+## ** UNOFFICIAL, OPEN SOURCE **
+### This package is experimental and not officially supported by Helpshift
 
 ## Getting started
 
