@@ -9,7 +9,6 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMapKeySetIterator;
-
 import java.io.File;
 import java.util.Map;
 import java.util.HashMap;
@@ -22,6 +21,7 @@ import com.helpshift.exceptions.InstallException;
 import com.helpshift.support.Support;
 import com.helpshift.HelpshiftUser;
 import com.helpshift.support.ApiConfig;
+import com.helpshift.conversation.activeconversation.model.ActionType;
 
 import android.app.Activity;
 import android.app.Application;
@@ -57,6 +57,11 @@ public class RNHelpshiftModule extends ReactContextBaseJavaModule implements Sup
         Support.setDelegate(this);
         Core.init(Support.getInstance());
         Core.install(this.app, key, domain, appid);
+    }
+    
+    @Override
+    public void userClickOnAction(ActionType actionType, String actionData) {
+        // your code
     }
 
     @ReactMethod

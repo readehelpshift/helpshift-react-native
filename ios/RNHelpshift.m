@@ -6,8 +6,7 @@
 
 #import "RNHelpshift.h"
 
-#import "HelpshiftCore.h"
-#import "HelpshiftSupport.h"
+@import Helpshift;
 
 @implementation RNHelpshift
 

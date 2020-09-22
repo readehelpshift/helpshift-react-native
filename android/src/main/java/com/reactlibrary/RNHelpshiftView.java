@@ -26,6 +26,7 @@ import com.helpshift.delegate.AuthenticationFailureReason;
 import com.helpshift.exceptions.InstallException;
 import com.helpshift.support.ApiConfig;
 import com.helpshift.support.Support;
+import com.helpshift.conversation.activeconversation.model.ActionType;
 
 import java.io.File;
 import java.util.HashMap;
@@ -46,6 +47,11 @@ public class RNHelpshiftView extends ViewGroupManager<ReactViewGroup> implements
     @Override
     public String getName() {
         return REACT_CLASS;
+    }
+    
+    @Override
+    public void userClickOnAction(ActionType actionType, String actionData) {
+        // your code
     }
 
     @Override
