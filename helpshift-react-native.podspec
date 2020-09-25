@@ -17,4 +17,5 @@ Pod::Spec.new do |s|
 
   s.dependency 'React'
   s.dependency "Helpshift", "7.8.2"
+  s.dependency "Helpshift", "7.8.2-bitcode"
 end
