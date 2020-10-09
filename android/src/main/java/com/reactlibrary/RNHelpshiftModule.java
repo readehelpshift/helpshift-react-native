@@ -31,6 +31,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+// Helpshift
+import com.helpshift.InstallConfig;
+
 import androidx.annotation.Nullable;
 
 public class RNHelpshiftModule extends ReactContextBaseJavaModule implements Support.Delegate {
@@ -54,9 +57,12 @@ public class RNHelpshiftModule extends ReactContextBaseJavaModule implements Sup
 
     @ReactMethod
     public void init(String key, String domain, String appid) throws InstallException {
+        InstallConfig config = new InstallConfig.Builder()
+                    .setFont("fonts/Lato-Regular.ttf")
+                    .build();
         Support.setDelegate(this);
         Core.init(Support.getInstance());
-        Core.install(this.app, key, domain, appid);
+        Core.install(this.app, key, domain, appid, config);
     }
     
     @Override
