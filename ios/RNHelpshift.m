@@ -32,6 +32,8 @@ RCT_EXPORT_MODULE()
 RCT_EXPORT_METHOD(init:(NSString *)apiKey domain:(NSString *)domain appId:(NSString *)appId)
 {
     HelpshiftInstallConfigBuilder *installConfigBuilder = [[HelpshiftInstallConfigBuilder alloc] init];
+    installConfigBuilder.enableDefaultFallbackLanguage = YES;
+    HelpshiftInstallConfig *installConfig = [installConfigBuilder build];
     [HelpshiftCore initializeWithProvider:[HelpshiftSupport sharedInstance]];
     [HelpshiftCore installForApiKey:apiKey domainName:domain appID:appId withConfig:installConfigBuilder.build];
 }
