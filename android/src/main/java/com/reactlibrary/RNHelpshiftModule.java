@@ -58,6 +58,7 @@ public class RNHelpshiftModule extends ReactContextBaseJavaModule implements Sup
     @ReactMethod
     public void init(String key, String domain, String appid) throws InstallException {
         InstallConfig config = new InstallConfig.Builder()
+                    .setEnableDefaultFallbackLanguage(true)
                     .setFont("fonts/Lato-Regular.ttf")
                     .build();
         Support.setDelegate(this);
