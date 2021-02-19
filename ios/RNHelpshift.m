@@ -72,6 +72,12 @@ RCT_EXPORT_METHOD(showFAQs)
     [HelpshiftSupport showFAQs:rootController withConfig:nil];
 }
 
+RCT_EXPORT_METHOD(showFAQById:(NSString *)faqId)
+{
+    UIViewController *rootController = UIApplication.sharedApplication.delegate.window.rootViewController;
+    [HelpshiftSupport showSingleFAQ:faqId withController:rootController withOptions:nil];
+}
+
 RCT_EXPORT_METHOD(showFAQsWithCIFs:(NSDictionary *)cifs)
 {
     HelpshiftAPIConfigBuilder *builder = [[HelpshiftAPIConfigBuilder alloc] init];

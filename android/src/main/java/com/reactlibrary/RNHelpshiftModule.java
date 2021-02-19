@@ -119,6 +119,12 @@ public class RNHelpshiftModule extends ReactContextBaseJavaModule implements Sup
         final Activity activity = getCurrentActivity();
         Support.showFAQs(activity);
     }
+    
+    @ReactMethod
+    public void showFAQById(String id){
+        final Activity activity = getCurrentActivity();
+        Support.showSingleFAQ(activity, id);        
+    }
 
     @ReactMethod
     public void showFAQsWithCIFs(ReadableMap cifs){
