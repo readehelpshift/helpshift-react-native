@@ -44,6 +44,8 @@ Helpshift.showConversation = () => RNHelpshift.showConversation();
 
 Helpshift.showFAQs = () => RNHelpshift.showFAQs();
 
+Helpshift.showFAQById = ({ id }) => RNHelpshift.showFAQById(id);
+
 Helpshift.showConversationWithCIFs = cifs => RNHelpshift.showConversationWithCIFs(cifs);
 
 Helpshift.showFAQsWithCIFs = cifs => RNHelpshift.showFAQsWithCIFs(cifs);
