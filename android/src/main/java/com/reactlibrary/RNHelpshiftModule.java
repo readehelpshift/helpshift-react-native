@@ -57,15 +57,9 @@ public class RNHelpshiftModule extends ReactContextBaseJavaModule implements Sup
 
     @ReactMethod
     public void init(String key, String domain, String appid) throws InstallException {
-        InstallConfig config = new InstallConfig.Builder()
-                    .setEnableDefaultFallbackLanguage(true)
-                    .setFont("fonts/Lato-Regular.ttf")
-                    .build();
-        Support.setDelegate(this);
-        Core.init(Support.getInstance());
-        Core.install(this.app, key, domain, appid, config);
+        // not init sdk, set in Main Application
     }
-    
+
     @Override
     public void userClickOnAction(ActionType actionType, String actionData) {
         // your code
@@ -119,17 +113,17 @@ public class RNHelpshiftModule extends ReactContextBaseJavaModule implements Sup
         final Activity activity = getCurrentActivity();
         Support.showFAQs(activity);
     }
-    
+
     @ReactMethod
     public void showFAQById(String id){
         final Activity activity = getCurrentActivity();
-        Support.showSingleFAQ(activity, id);        
+        Support.showSingleFAQ(activity, id);
     }
-    
+
     @ReactMethod
     public void showSectionById(String id){
         final Activity activity = getCurrentActivity();
-        Support.showFAQSection(activity, id);        
+        Support.showFAQSection(activity, id);
     }
 
     @ReactMethod
