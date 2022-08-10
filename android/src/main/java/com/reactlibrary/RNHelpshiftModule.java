@@ -234,4 +234,8 @@ public class RNHelpshiftModule extends ReactContextBaseJavaModule implements Sup
         params.putString("reason", reason.toString());
         sendEvent(mReactContext, "Helpshift/AuthenticationFailed", params);
     }
+    @Override
+    public void userClickOnAction(ActionType actionType, String actionData) {
+      // your code
+    }
 }
