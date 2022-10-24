@@ -1,8 +1,8 @@
 {
   "name": "helpshift-react-native",
-  "version": "7.8.0",
+  "version": "10.2.0",
   "description": "Helpshift React Native wrapper",
-  "homepage": "https://github.com/readehelpshift/helpshift-react-native",
+  "homepage": "https://github.com/ChouicGames/helpshift-react-native",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

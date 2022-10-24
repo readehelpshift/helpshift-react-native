@@ -6,14 +6,13 @@
 
 #import "RNHelpshift.h"
 
-#import "HelpshiftCore.h"
-#import "HelpshiftSupport.h"
+@import HelpshiftX;
 
 @implementation RNHelpshift
 
 -(id) init {
     self = [super init];
-    [[HelpshiftSupport sharedInstance] setDelegate:self];
+    [[Helpshift sharedInstance] setDelegate:self];
     return self;
 }
 
@@ -32,58 +31,24 @@ RCT_EXPORT_MODULE()
 
 RCT_EXPORT_METHOD(init:(NSString *)apiKey domain:(NSString *)domain appId:(NSString *)appId)
 {
-    HelpshiftInstallConfigBuilder *installConfigBuilder = [[HelpshiftInstallConfigBuilder alloc] init];
-    installConfigBuilder.enableAutomaticThemeSwitching = YES;
-    [HelpshiftCore initializeWithProvider:[HelpshiftSupport sharedInstance]];
-    [HelpshiftCore installForApiKey:apiKey domainName:domain appID:appId withConfig:installConfigBuilder.build];
-}
-
-RCT_EXPORT_METHOD(login:(NSDictionary *)user)
-{
-    HelpshiftUserBuilder *userBuilder = [[HelpshiftUserBuilder alloc] initWithIdentifier:user[@"identifier"] andEmail:user[@"email"]];
-    if (user[@"name"]) userBuilder.name = user[@"name"];
-    if (user[@"authToken"]) userBuilder.authToken = user[@"authToken"];
-    [HelpshiftCore login:userBuilder.build];
-}
-
-RCT_EXPORT_METHOD(logout)
-{
-    [HelpshiftCore logout];
+    NSDictionary *config = @{};
+    [Helpshift installWithPlatformId:appId
+                              domain:domain
+                              config:config];
 }
 
 RCT_EXPORT_METHOD(showConversation)
 {
+    NSDictionary *configDictionary = @{};
     UIViewController *rootController = UIApplication.sharedApplication.delegate.window.rootViewController;
-    [HelpshiftSupport showConversation:rootController withConfig: nil];
-}
-
-RCT_EXPORT_METHOD(showConversationWithCIFs:(NSDictionary *)cifs)
-{
-    HelpshiftAPIConfigBuilder *builder = [[HelpshiftAPIConfigBuilder alloc] init];
-    builder.customIssueFields = cifs;
-    HelpshiftAPIConfig *apiConfig = [builder build];
-    UIViewController *rootController = UIApplication.sharedApplication.delegate.window.rootViewController;
-    [HelpshiftSupport showConversation:rootController withConfig: apiConfig];
+    [Helpshift showConversationWith:rootController config:configDictionary];
 }
 
 RCT_EXPORT_METHOD(showFAQs)
 {
+    NSDictionary *configDictionary = @{};
     UIViewController *rootController = UIApplication.sharedApplication.delegate.window.rootViewController;
-    [HelpshiftSupport showFAQs:rootController withConfig:nil];
-}
-
-RCT_EXPORT_METHOD(showFAQsWithCIFs:(NSDictionary *)cifs)
-{
-    HelpshiftAPIConfigBuilder *builder = [[HelpshiftAPIConfigBuilder alloc] init];
-    builder.customIssueFields = cifs;
-    HelpshiftAPIConfig *apiConfig = [builder build];
-    UIViewController *rootController = UIApplication.sharedApplication.delegate.window.rootViewController;
-    [HelpshiftSupport showFAQs:rootController withConfig:apiConfig];
-}
-
-RCT_EXPORT_METHOD(requestUnreadMessagesCount)
-{
-    [HelpshiftSupport requestUnreadMessagesCount:YES];
+    [Helpshift showFAQsWith:rootController config:configDictionary];
 }
 
 - (NSArray<NSString *> *)supportedEvents
@@ -142,11 +107,6 @@ RCT_EXPORT_METHOD(requestUnreadMessagesCount)
     [self sendEventWithName:@"Helpshift/DidReceiveUnreadMessagesCount" body:@{@"count": @(count)}];
 }
 
-- (void) authenticationFailedForUser:(HelpshiftUser *)user withReason:(HelpshiftAuthenticationFailureReason)reason {
-    RCTLog(@"Helpshift/AuthenticationFailed user: %@", user);
-    [self sendEventWithName:@"Helpshift/AuthenticationFailed" body:@{@"user": user}];
-}
-
 @end
 
 
@@ -158,46 +118,6 @@ RCT_EXPORT_METHOD(requestUnreadMessagesCount)
 @implementation RNTHelpshiftManager
 
 RCT_EXPORT_MODULE(RNTHelpshift)
-
-RCT_CUSTOM_VIEW_PROPERTY(config, NSDictionary, RNTHelpshiftManager) {
-    HelpshiftInstallConfigBuilder *installConfigBuilder = [[HelpshiftInstallConfigBuilder alloc] init];
-    installConfigBuilder.enableAutomaticThemeSwitching = YES;
-    [HelpshiftCore initializeWithProvider:[HelpshiftSupport sharedInstance]];
-    [HelpshiftCore installForApiKey:json[@"apiKey"]
-                         domainName:json[@"domain"]
-                              appID:json[@"appId"]
-                         withConfig:installConfigBuilder.build];
-
-    // Log user in if identified
-    if (json[@"user"]) {
-        NSDictionary *user = json[@"user"];
-        HelpshiftUserBuilder *userBuilder = [[HelpshiftUserBuilder alloc] initWithIdentifier:user[@"identifier"] andEmail:user[@"email"]];
-        if (user[@"name"]) userBuilder.name = user[@"name"];
-        if (user[@"authToken"]) userBuilder.authToken = user[@"authToken"];
-        [HelpshiftCore login:userBuilder.build];
-    }
-    
-    // Get the Helpshift conversation view controller.
-    HelpshiftAPIConfigBuilder *builder = [HelpshiftAPIConfigBuilder new];
-    // Add CIFS if existing
-    if (json[@"cifs"]) builder.customIssueFields = json[@"cifs"];
-    [HelpshiftSupport conversationViewControllerWithConfig:[builder build] completion:^(UIViewController *conversationVC) {
-        UIViewController *rootController = UIApplication.sharedApplication.delegate.window.rootViewController;
-        
-        UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:conversationVC];
-        [navController willMoveToParentViewController:rootController];
-        
-        if (json[@"height"] && json[@"width"]) {
-            float height = [json[@"height"] floatValue];
-            float width = [json[@"width"] floatValue];
-            navController.view.frame = CGRectMake(0, 0, width, height);
-        }
-
-        [self.helpshiftView addSubview:navController.view];
-        [rootController addChildViewController:navController];
-        [navController didMoveToParentViewController:rootController];
-    }];
-}
 
 - (UIView *)view
 {

@@ -11,7 +11,7 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
 import com.facebook.react.bridge.JavaScriptModule;
 public class RNHelpshiftPackage implements ReactPackage {
-    @Override
+     
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
       return Arrays.<NativeModule>asList(new RNHelpshiftModule(reactContext));
     }
@@ -21,7 +21,7 @@ public class RNHelpshiftPackage implements ReactPackage {
       return Collections.emptyList();
     }
 
-    @Override
+     
     public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
         return Arrays.<ViewManager>asList(
                 new RNHelpshiftView()
