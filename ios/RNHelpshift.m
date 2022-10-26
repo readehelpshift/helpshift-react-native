@@ -51,6 +51,11 @@ RCT_EXPORT_METHOD(showFAQs)
     [Helpshift showFAQsWith:rootController config:configDictionary];
 }
 
+RCT_EXPORT_METHOD(requestUnreadMessagesCount)
+{
+    [Helpshift requestUnreadMessageCount:YES];
+}
+
 - (NSArray<NSString *> *)supportedEvents
 {
     return @[

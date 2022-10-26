@@ -3,6 +3,6 @@
 #import "RCTEventEmitter.h"
 @import HelpshiftX;
 
-@interface RNHelpshift : RCTEventEmitter <RCTBridgeModule>
+@interface RNHelpshift : RCTEventEmitter <RCTBridgeModule, HelpshiftDelegate>
 @end
   

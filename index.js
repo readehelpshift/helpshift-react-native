@@ -4,7 +4,6 @@ import {
   NativeEventEmitter,
   requireNativeComponent
 } from 'react-native';
-import PropTypes from 'prop-types';
 
 class Helpshift extends React.Component {
   render() {
@@ -12,22 +11,6 @@ class Helpshift extends React.Component {
   }
 }
 
-Helpshift.propTypes = {
-  config: PropTypes.shape({
-    apiKey: PropTypes.string.isRequired,
-    domain: PropTypes.string.isRequired,
-    appId: PropTypes.string.isRequired,
-    height: PropTypes.number,
-    width: PropTypes.number,
-    user: PropTypes.shape({
-      identifier: PropTypes.string.isRequired,
-      email: PropTypes.string,
-      name: PropTypes.string,
-      authToken: PropTypes.string
-    }),
-    cifs: PropTypes.object
-  }).isRequired
-};
 
 const { RNHelpshift } = NativeModules;
 
