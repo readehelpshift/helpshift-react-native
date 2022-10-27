@@ -23,7 +23,7 @@ Helpshift.login = user => RNHelpshift.login(user)
 
 Helpshift.logout = user => RNHelpshift.logout();
 
-Helpshift.showConversation = () => RNHelpshift.showConversation();
+Helpshift.showConversation = cifs => RNHelpshift.showConversation(cifs);
 
 Helpshift.showFAQs = () => RNHelpshift.showFAQs();
 
