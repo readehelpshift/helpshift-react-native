@@ -39,18 +39,10 @@ RCT_EXPORT_METHOD(init:(NSString *)apiKey domain:(NSString *)domain appId:(NSStr
 
 RCT_EXPORT_METHOD(showConversation:(NSDictionary *)cifs)
 {
+    NSDictionary *config = @{ @"customMetadata" : cifs };
     UIViewController *rootController = UIApplication.sharedApplication.delegate.window.rootViewController;
-    [Helpshift showConversationWith:rootController config:cifs];
+    [Helpshift showConversationWith:rootController config:config];
 }
-
-// RCT_EXPORT_METHOD(showConversationWithCIFs:(NSDictionary *)cifs)
-// {
-//     HelpshiftAPIConfigBuilder *builder = [[HelpshiftAPIConfigBuilder alloc] init];
-//     builder.customIssueFields = cifs;
-//     HelpshiftAPIConfig *apiConfig = [builder build];
-//     UIViewController *rootController = UIApplication.sharedApplication.delegate.window.rootViewController;
-//     [Helpshift showConversation:rootController withConfig: apiConfig];
-// }
 
 RCT_EXPORT_METHOD(showFAQs)
 {
@@ -125,7 +117,9 @@ RCT_EXPORT_METHOD(requestUnreadMessagesCount)
         int count = data[HelpshiftEventDataUnreadMessageCount];
         NSLog(@"Unread count: %d", data[HelpshiftEventDataUnreadMessageCount]);
         NSLog(@"Is unreadCount served from local cache : %d", data[HelpshiftEventDataUnreadMessageCountIsFromCache]);
-        [self sendEventWithName:@"Helpshift/DidReceiveUnreadMessagesCount" body:@{@"count": @(count)}];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self sendEventWithName:@"Helpshift/DidReceiveUnreadMessagesCount" body:@{@"count": @(count)}];
+        });
     }
 }
 @end
