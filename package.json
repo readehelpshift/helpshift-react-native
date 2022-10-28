@@ -3,7 +3,7 @@
   "version": "10.2.0",
   "description": "Helpshift React Native wrapper",
   "homepage": "https://github.com/ChouicGames/helpshift-react-native",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

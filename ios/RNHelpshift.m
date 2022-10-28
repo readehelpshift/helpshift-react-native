@@ -114,9 +114,9 @@ RCT_EXPORT_METHOD(requestUnreadMessagesCount)
 
 - (void) handleHelpshiftEvent:(NSString *)eventName withData:(NSDictionary *)data {
     if([eventName isEqualToString:HelpshiftEventNameReceivedUnreadMessageCount]) {
-        int count = data[HelpshiftEventDataUnreadMessageCount];
-        NSLog(@"Unread count: %d", data[HelpshiftEventDataUnreadMessageCount]);
-        NSLog(@"Is unreadCount served from local cache : %d", data[HelpshiftEventDataUnreadMessageCountIsFromCache]);
+        NSNumber *mapXObj = [data valueForKey:HelpshiftEventDataUnreadMessageCount];
+        int count = [mapXObj intValue];
+        NSLog(@"Unread count: %d", count);
         dispatch_async(dispatch_get_main_queue(), ^{
             [self sendEventWithName:@"Helpshift/DidReceiveUnreadMessagesCount" body:@{@"count": @(count)}];
         });
