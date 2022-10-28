@@ -28,6 +28,9 @@ export const showFAQsWithCIFs = (cifs: object) => RNHelpshift.showFAQsWithCIFs(c
 export const requestUnreadMessagesCount = () => {
   RNHelpshift.requestUnreadMessagesCount();
 }
+export const getHelpshiftEventEmitter = () => {
+  return HelpshiftEventEmitter;
+};
 
 export const useHelpshiftEventListener = (eventName: string, handler: Function) => {
   const savedHandler = useRef();
