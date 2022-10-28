@@ -56,8 +56,9 @@ public class RNHelpshiftModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void showConversation(){
-        Map<String, Object> params = new HashMap<>();
+    public void showConversation(ReadableMap customMeta) {
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("customMetadata", getCustomIssueFields(customMeta));
         final Activity activity = getCurrentActivity();
         Helpshift.showConversation(activity, params);
     }
@@ -70,8 +71,9 @@ public class RNHelpshiftModule extends ReactContextBaseJavaModule {
     // }
 
     @ReactMethod
-    public void showFAQs(){
-        Map<String, Object> params = new HashMap<>();
+    public void showFAQs(HashMap<String, String> customMetadata) {
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("customMetadata", customMetadata);
         final Activity activity = getCurrentActivity();
         Helpshift.showFAQs(activity, params);
     }
@@ -112,14 +114,14 @@ public class RNHelpshiftModule extends ReactContextBaseJavaModule {
                 .emit(eventName, params);
     }
 
-    private Map<String, String[]> getCustomIssueFields(ReadableMap cifs) {
+    private HashMap<String, String> getCustomIssueFields(ReadableMap cifs) {
         ReadableMapKeySetIterator iterator = cifs.keySetIterator();
-        Map<String, String[]> customIssueFields = new HashMap<>();
+        HashMap<String, String> customIssueFields = new HashMap<>();
 
         while (iterator.hasNextKey()) {
             String key = iterator.nextKey();
-            ReadableArray array = cifs.getArray(key);
-            customIssueFields.put(key, new String[]{array.getString(0), array.getString(1)});
+            String key2 = cifs.getString(key);
+            customIssueFields.put(key, key2);
         }
 
         return customIssueFields;
