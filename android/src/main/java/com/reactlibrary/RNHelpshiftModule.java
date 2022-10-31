@@ -126,7 +126,6 @@ public class RNHelpshiftModule extends ReactContextBaseJavaModule {
                 case HelpshiftEvent.RECEIVED_UNREAD_MESSAGE_COUNT:
                     Integer count = (int) data.get(HelpshiftEvent.DATA_MESSAGE_COUNT);
                     Log.d("Notification Count", "local" + count);
-                    out.println("count vaut : " + count);
                     boolean fromCache = (boolean) data.get(HelpshiftEvent.DATA_MESSAGE_COUNT_FROM_CACHE);
                     WritableMap params = new WritableNativeMap();
                     params.putInt("count", count);
