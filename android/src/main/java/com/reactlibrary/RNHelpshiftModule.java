@@ -9,6 +9,8 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMapKeySetIterator;
+import com.facebook.react.bridge.WritableNativeMap;
+import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import java.io.File;
@@ -119,22 +121,23 @@ public class RNHelpshiftModule extends ReactContextBaseJavaModule {
         Helpshift.requestUnreadMessageCount(true);
 
         Helpshift.setHelpshiftEventsListener(new HelpshiftEventsListener() {
-        @Override
-        public void onEventOccurred(String eventName, Map<String, Object> data) {
-            switch(eventName){
-            case HelpshiftEvent.RECEIVED_UNREAD_MESSAGE_COUNT:
-                int count = (int) data.get(HelpshiftEvent.DATA_MESSAGE_COUNT);
-                boolean fromCache = (boolean) data.get(HelpshiftEvent.DATA_MESSAGE_COUNT_FROM_CACHE);
-                Map<String, Object> params = new HashMap<>();
-                params.put("count", count);
-                sendEvent(mReactContext, "Helpshift/DidReceiveUnreadMessagesCount", params);
+            public void onEventOccurred(String eventName, Map<String, Object> data) {
+                switch(eventName){
+                case HelpshiftEvent.RECEIVED_UNREAD_MESSAGE_COUNT:
+                    Integer count = (int) data.get(HelpshiftEvent.DATA_MESSAGE_COUNT);
+                    Log.d("Notification Count", "local" + count);
+                    out.println("count vaut : " + count);
+                    boolean fromCache = (boolean) data.get(HelpshiftEvent.DATA_MESSAGE_COUNT_FROM_CACHE);
+                    WritableMap params = new WritableNativeMap();
+                    params.putInt("count", count);
+                    sendEvent(mReactContext, "Helpshift/DidReceiveUnreadMessagesCount", params);
+                }
             }
-        }
-        public void onUserAuthenticationFailure(HelpshiftAuthenticationFailureReason reason) {}
-    });
+            public void onUserAuthenticationFailure(HelpshiftAuthenticationFailureReason reason) {}
+        });
     }
 
-    private void sendEvent(ReactContext reactContext, String eventName, Map<String, Object> params) {
+    private void sendEvent(ReactContext reactContext, String eventName, WritableMap params) {
         reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                 .emit(eventName, params);
     }
@@ -152,16 +155,16 @@ public class RNHelpshiftModule extends ReactContextBaseJavaModule {
         return customIssueFields;
     }
 
-    public void sessionBegan() {
-        Log.d("Helpshift", "sessionBegan");
-        sendEvent(mReactContext, "Helpshift/SessionBegan", new HashMap<>());
-    }
+    // public void sessionBegan() {
+    //     Log.d("Helpshift", "sessionBegan");
+    //     sendEvent(mReactContext, "Helpshift/SessionBegan", new HashMap<>());
+    // }
 
      
-    public void sessionEnded() {
-        Log.d("Helpshift", "sessionEnded");
-        sendEvent(mReactContext, "Helpshift/SessionEnded", new HashMap<>());
-    }
+    // public void sessionEnded() {
+    //     Log.d("Helpshift", "sessionEnded");
+    //     sendEvent(mReactContext, "Helpshift/SessionEnded", new HashMap<>());
+    // }
 
     //  
     // public void newConversationStarted(String newConversationMessage) {
@@ -172,10 +175,10 @@ public class RNHelpshiftModule extends ReactContextBaseJavaModule {
     // }
 
      
-    public void conversationEnded() {
-        Log.d("Helpshift", "conversationEnded");
-        sendEvent(mReactContext, "Helpshift/ConversationEnded", new HashMap<>());
-    }
+    // public void conversationEnded() {
+    //     Log.d("Helpshift", "conversationEnded");
+    //     sendEvent(mReactContext, "Helpshift/ConversationEnded", new HashMap<>());
+    // }
 
     //  
     // public void userRepliedToConversation(String newMessage) {
