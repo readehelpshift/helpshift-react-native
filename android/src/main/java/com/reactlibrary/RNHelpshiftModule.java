@@ -16,6 +16,9 @@ import java.util.Map;
 import java.util.HashMap;
 
 import com.helpshift.Helpshift;
+import com.helpshift.HelpshiftEvent;
+import com.helpshift.HelpshiftEventsListener;
+import com.helpshift.HelpshiftAuthenticationFailureReason;
 
 import android.app.Activity;
 import android.app.Application;
@@ -108,6 +111,28 @@ public class RNHelpshiftModule extends ReactContextBaseJavaModule {
 
     //     Helpshift.getNotificationCount(countSuccessHandler, countErrorHandler);
     // }
+
+    @ReactMethod
+    public void requestUnreadMessagesCount(){
+
+        // TODO: Is the correct place to create these?
+        Helpshift.requestUnreadMessageCount(true);
+
+        Helpshift.setHelpshiftEventsListener(new HelpshiftEventsListener() {
+        @Override
+        public void onEventOccurred(String eventName, Map<String, Object> data) {
+            switch(eventName){
+            case HelpshiftEvent.RECEIVED_UNREAD_MESSAGE_COUNT:
+                int count = (int) data.get(HelpshiftEvent.DATA_MESSAGE_COUNT);
+                boolean fromCache = (boolean) data.get(HelpshiftEvent.DATA_MESSAGE_COUNT_FROM_CACHE);
+                Map<String, Object> params = new HashMap<>();
+                params.put("count", count);
+                sendEvent(mReactContext, "Helpshift/DidReceiveUnreadMessagesCount", params);
+            }
+        }
+        public void onUserAuthenticationFailure(HelpshiftAuthenticationFailureReason reason) {}
+    });
+    }
 
     private void sendEvent(ReactContext reactContext, String eventName, Map<String, Object> params) {
         reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
