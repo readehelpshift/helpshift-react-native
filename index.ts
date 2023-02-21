@@ -40,7 +40,7 @@ export const useHelpshiftEventListener = (
   eventName: string,
   handler: Function
 ) => {
-  const savedHandler = useRef();
+  const savedHandler = useRef<Function | undefined>();
 
   useEffect(() => {
     savedHandler.current = handler;
@@ -51,7 +51,7 @@ export const useHelpshiftEventListener = (
       // Make sure element supports addEventListener
       // On
       // Create event listener that calls handler function stored in ref
-      const eventListener = (event: Function) => savedHandler.current(event);
+      const eventListener = (event: Function) => (savedHandler.current as Function)(event);
       // Add event listener
       HelpshiftEventEmitter.addListener(eventName, eventListener);
       // Remove event listener on cleanup
